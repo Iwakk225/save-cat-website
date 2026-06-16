@@ -1,0 +1,90 @@
+.loader-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 9999;
+}
+
+.loader {
+    position: relative;
+    width: 80px;
+    height: 60px;
+    margin: 0 auto;
+}
+
+.loader::before {
+    content: "";
+    position: absolute;
+    bottom: 20px;
+    left: 33px;
+    height: 20px;
+    width: 20px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M25 30 L35 10 L45 30 Z' fill='%23f59e0b'/><path d='M55 30 L65 10 L75 30 Z' fill='%23f59e0b'/><circle cx='50' cy='50' r='30' fill='%23fbbf24'/><circle cx='40' cy='45' r='4' fill='%231f2937'/><circle cx='60' cy='45' r='4' fill='%231f2937'/><ellipse cx='50' cy='55' rx='3' ry='2' fill='%23ec4899'/></svg>");
+    background-size: contain;
+    animation: loading-bounce 0.5s ease-in-out infinite alternate;
+}
+
+.loader::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 5px;
+    width: 30px;
+    border-radius: 3px;
+    box-shadow: 0 3px 0 #f2f2f2, -23px 33px 0 #f2f2f2, -47px 63px 0 #f2f2f2;
+    animation: loading-step 1s ease-in-out infinite;
+}
+
+.loading-text {
+    margin-top: 24px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    animation: pulse 2s ease-in-out infinite;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@keyframes loading-bounce {
+    0% {
+        transform: scale(1, 0.7);
+    }
+    40% {
+        transform: scale(0.8, 1.2);
+    }
+    60% {
+        transform: scale(1, 1);
+    }
+    100% {
+        bottom: 90px;
+    }
+}
+
+@keyframes loading-step {
+    0% {
+        box-shadow: 0 6px 0 rgba(0, 0, 0, 0),
+                0 6px 0 #f2f2f2,
+                -23px 33px 0 #f2f2f2,
+                -47px 60px 0 #f2f2f2;
+    }
+    100% {
+        box-shadow: 0 6px 0 #f2f2f2,
+                -23px 33px 0 #f2f2f2,
+                -47px 60px 0 #f2f2f2,
+                -47px 60px 0 rgba(0, 0, 0, 0);
+    }
+}

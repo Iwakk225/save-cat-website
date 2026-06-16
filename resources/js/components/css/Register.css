@@ -1,0 +1,89 @@
+.register-container {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* Slide up animation */
+@keyframes slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fade in animation */
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.animate-slide-up {
+    animation: slide-up 0.6s ease-out forwards;
+}
+
+.animate-fade-in {
+    animation: fade-in 0.6s ease-out forwards;
+}
+
+/* Staggered input animations */
+.animate-input-delay-1 {
+    animation: slide-up 0.5s ease-out 0.1s forwards;
+    opacity: 0;
+}
+
+.animate-input-delay-2 {
+    animation: slide-up 0.5s ease-out 0.2s forwards;
+    opacity: 0;
+}
+
+.animate-input-delay-3 {
+    animation: slide-up 0.5s ease-out 0.3s forwards;
+    opacity: 0;
+}
+
+.animate-input-delay-4 {
+    animation: slide-up 0.5s ease-out 0.4s forwards;
+    opacity: 0;
+}
+
+.animate-input-delay-5 {
+    animation: slide-up 0.5s ease-out 0.5s forwards;
+    opacity: 0;
+}
+
+.animate-input-delay-6 {
+    animation: slide-up 0.5s ease-out 0.6s forwards;
+    opacity: 0;
+}
+
+/* Custom scrollbar */
+.register-container ::-webkit-scrollbar {
+    width: 6px;
+}
+
+.register-container ::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.register-container ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+/* Input autofill styling */
+.register-container input:-webkit-autofill,
+.register-container input:-webkit-autofill:hover,
+.register-container input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 30px rgba(255, 255, 255, 0.05) inset !important;
+    -webkit-text-fill-color: white !important;
+    transition: background-color 5000s ease-in-out 0s;
+}

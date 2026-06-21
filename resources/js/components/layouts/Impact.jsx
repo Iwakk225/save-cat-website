@@ -1,4 +1,4 @@
-import { FileText, Heart, Users, MapPin } from 'lucide-react';
+import { FileText, Heart, Users, MapPin, MoveUpRight } from 'lucide-react';
 
 export default function Impact() {
     // dummy
@@ -43,8 +43,8 @@ export default function Impact() {
                 {/* Header Section */}
                 <div className="text-center mb-16">
                     <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 border border-blue-100 mb-4">
-                        <span className="text-blue-600 text-sm font-semibold">
-                            DAMPAK KOMUNITAS
+                        <span className="inline-flex items-center text-blue-600 text-sm font-semibold">
+                            <MoveUpRight className="mr-2" /> DAMPAK KOMUNITAS
                         </span>
                     </div>
                     <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">

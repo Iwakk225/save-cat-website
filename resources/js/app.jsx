@@ -6,6 +6,9 @@ import Landing from './components/LandingPages';
 import Register from './components/RegisterPages';
 import Login from './components/LoginPages';
 import VerifyEmail from './components/VerifyEmailPages';
+import ForgotPassword from './components/ForgetPassPages';
+import VerifyResetCode from './components/ForgetPassProcess/VerifyResetCode';
+import ResetPassword from './components/ForgetPassProcess/ResetPassword';
 
 function App() {
     return (
@@ -15,6 +18,9 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/verify-email" element={<VerifyEmail />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/verify-reset-code" element={<VerifyResetCode />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
             </Routes>
         </BrowserRouter>
     );

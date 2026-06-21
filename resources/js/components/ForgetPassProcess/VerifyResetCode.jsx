@@ -4,12 +4,12 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import Swal from 'sweetalert2';
 
-import './css/Register.css';
+import '../css/Register.css';
 import BgImage from '@/assets/imageskitten.jpeg';
 import Logo from '@/assets/savecatlogo.png';
-import CatLoader from './vfx/Loading';
+import CatLoader from '../vfx/Loading';
 
-export default function VerifyEmail() {
+export default function VerifyResetCode() {
     const navigate = useNavigate();
     const location = useLocation();
     const email = location.state?.email;
@@ -18,30 +18,14 @@ export default function VerifyEmail() {
     const [loading, setLoading] = useState(false);
     const [focusedIndex, setFocusedIndex] = useState(null);
     const [canResend, setCanResend] = useState(true);
-    const [cooldownTime, setCooldownTime] = useState(0);
+    const [cooldownTime, setCooldownTime] = useState(0); 
     const inputRefs = useRef([]);
     const cooldownInterval = useRef(null);
 
     useEffect(() => {
         if (!email) {
-            navigate('/register');
-            return;
+            navigate('/forgot-password');
         }
-
-        // Start cooldown saat component mount
-        setCanResend(false);
-        setCooldownTime(600);
-
-        cooldownInterval.current = setInterval(() => {
-            setCooldownTime((prev) => {
-                if (prev <= 1) {
-                    clearInterval(cooldownInterval.current);
-                    setCanResend(true);
-                    return 0;
-                }
-                return prev - 1;
-            });
-        }, 1000);
     }, [email, navigate]);
 
     // Cleanup interval saat component unmount
@@ -56,7 +40,7 @@ export default function VerifyEmail() {
     // Start cooldown timer
     const startCooldown = () => {
         setCanResend(false);
-        setCooldownTime(600);
+        setCooldownTime(600); // 10 menit = 600 detik
 
         cooldownInterval.current = setInterval(() => {
             setCooldownTime((prev) => {
@@ -132,7 +116,7 @@ export default function VerifyEmail() {
         setLoading(true);
 
         try {
-            const response = await fetch('/api/verify-email', {
+            const response = await fetch('/api/verify-reset-code', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -143,24 +127,24 @@ export default function VerifyEmail() {
 
             const data = await response.json();
 
-            if (response.ok) {
+            if (response.ok && data.success) {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Verifikasi Berhasil!',
-                    text: data.message,
+                    title: 'Kode Valid!',
+                    text: 'Silakan buat password baru Anda.',
                     confirmButtonColor: '#10b981',
                     timer: 2000,
                     showConfirmButton: false,
                 });
 
                 setTimeout(() => {
-                    navigate('/login');
+                    navigate('/reset-password', { state: { email, code: fullCode } });
                 }, 2000);
             } else {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Verifikasi Gagal',
-                    text: data.message || 'Kode verifikasi tidak valid.',
+                    title: 'Kode Tidak Valid',
+                    text: data.message || 'Kode verifikasi salah. Silakan coba lagi.',
                     confirmButtonColor: '#10b981',
                 });
             }
@@ -182,7 +166,7 @@ export default function VerifyEmail() {
         setLoading(true);
 
         try {
-            const response = await fetch('/api/resend-verification', {
+            const response = await fetch('/api/resend-reset-code', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -193,24 +177,23 @@ export default function VerifyEmail() {
 
             const data = await response.json();
 
-            if (response.ok) {
+            if (response.ok && data.success) {
                 Swal.fire({
                     icon: 'success',
-                    title: 'Kode Baru Terkirim!',
+                    title: 'Kode Terkirim Ulang!',
                     text: data.message,
                     confirmButtonColor: '#10b981',
                     timer: 2000,
                     showConfirmButton: false,
                 });
 
-                // Clear input dan start cooldown
-                setCode(['', '', '', '', '', '']);
+                // Start cooldown setelah berhasil kirim
                 startCooldown();
             } else {
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal Mengirim Ulang',
-                    text: data.message || 'Terjadi kesalahan.',
+                    text: data.message || 'Terjadi kesalahan. Silakan coba lagi.',
                     confirmButtonColor: '#10b981',
                 });
             }
@@ -218,7 +201,7 @@ export default function VerifyEmail() {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'Tidak dapat terhubung ke server.',
+                text: 'Tidak dapat terhubung ke server. Silakan coba lagi.',
                 confirmButtonColor: '#10b981',
             });
         } finally {
@@ -248,7 +231,7 @@ export default function VerifyEmail() {
             </div>
 
             <Link
-                to="/register"
+                to="/forgot-password"
                 className="absolute top-6 left-6 z-20 flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all duration-300 group animate-fade-in"
             >
                 <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
@@ -270,7 +253,7 @@ export default function VerifyEmail() {
                             </div>
                         </div>
                         <h1 className="text-3xl font-bold text-white mb-2">
-                            Verifikasi Email
+                            Verifikasi Kode
                         </h1>
                         <p className="text-gray-300 text-sm">
                             Masukkan 6 digit kode yang dikirim ke
@@ -317,7 +300,7 @@ export default function VerifyEmail() {
                                     className="cursor-pointer w-full bg-linear-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-semibold py-6 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/25 group"
                                     disabled={loading}
                                 >
-                                    {loading ? 'Memverifikasi...' : 'Verifikasi Email'}
+                                    {loading ? 'Memverifikasi...' : 'Verifikasi Kode'}
                                     {!loading && <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />}
                                 </Button>
                             </div>

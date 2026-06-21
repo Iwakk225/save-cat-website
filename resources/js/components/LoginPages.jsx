@@ -4,14 +4,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Eye, EyeOff, Mail, Lock, ArrowRight, ArrowLeft } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 import './../components/css/Register.css';
 import BgImage from '@/assets/imageskitten.jpeg';
 import Logo from '@/assets/savecatlogo.png';
+import CatLoader from './vfx/Loading';
 
 export default function Login() {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -25,15 +28,72 @@ export default function Login() {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // TODO: Handle login logic
-        console.log('Login:', formData);
-        navigate('/');
+        setLoading(true);
+
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: formData.email,
+                    password: formData.password,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                localStorage.setItem('user_token', data.user_token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+
+                window.dispatchEvent(new Event('storage-change'));
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Login Berhasil!',
+                    text: `Selamat datang, ${data.user.name}!`,
+                    confirmButtonColor: '#10b981',
+                    timer: 1500,
+                    showConfirmButton: false,
+                });
+
+                setTimeout(() => {
+                    navigate('/');
+                }, 1500);
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login Gagal',
+                    text: data.message || 'Email atau password salah.',
+                    confirmButtonColor: '#10b981',
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Tidak dapat terhubung ke server.',
+                confirmButtonColor: '#10b981',
+            });
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <div className="register-container pb-5">
+            {/* Loading Overlay */}
+            {loading && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-md bg-black/30">
+                    <CatLoader />
+                </div>
+            )}
+
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <img
@@ -77,24 +137,25 @@ export default function Login() {
                     {/* Form Container */}
                     <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl p-8">
                         <form onSubmit={handleSubmit} className="space-y-5">
-                            {/* Email / Nama */}
+                            {/* Email */}
                             <div className="space-y-2 animate-input-delay-1">
                                 <Label htmlFor="email" className="text-white/90 text-sm font-medium">
-                                    Email atau Nama
+                                    Email
                                 </Label>
                                 <div className={`relative transition-all duration-300 ${focusedField === 'email' ? 'scale-[1.02]' : ''}`}>
                                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                     <Input
                                         id="email"
                                         name="email"
-                                        type="text"
-                                        placeholder="Masukkan email atau nama"
+                                        type="email"
+                                        placeholder="contoh@email.com"
                                         value={formData.email}
                                         onChange={handleChange}
                                         onFocus={() => setFocusedField('email')}
                                         onBlur={() => setFocusedField(null)}
                                         className="pl-10 bg-white/5 border-white/20 text-white placeholder:text-gray-500 focus:border-emerald-400 focus:ring-emerald-400/20"
                                         required
+                                        disabled={loading}
                                     />
                                 </div>
                             </div>
@@ -125,11 +186,13 @@ export default function Login() {
                                         onBlur={() => setFocusedField(null)}
                                         className="pl-10 pr-10 bg-white/5 border-white/20 text-white placeholder:text-gray-500 focus:border-emerald-400 focus:ring-emerald-400/20"
                                         required
+                                        disabled={loading}
                                     />
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword(!showPassword)}
                                         className="cursor-pointer absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                                        disabled={loading}
                                     >
                                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                                     </button>
@@ -141,9 +204,10 @@ export default function Login() {
                                 <Button
                                     type="submit"
                                     className="cursor-pointer w-full bg-linear-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-semibold py-6 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/25 group"
+                                    disabled={loading}
                                 >
-                                    Masuk
-                                    <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+                                    {loading ? 'Memproses...' : 'Masuk'}
+                                    {!loading && <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />}
                                 </Button>
                             </div>
                         </form>

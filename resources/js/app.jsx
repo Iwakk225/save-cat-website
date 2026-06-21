@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Landing from './components/LandingPages';
 import Register from './components/RegisterPages';
 import Login from './components/LoginPages';
+import VerifyEmail from './components/VerifyEmailPages';
 
 function App() {
     return (
@@ -12,6 +13,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<Landing />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/verify-email" element={<VerifyEmail />} />
                 <Route path="/login" element={<Login />} />
             </Routes>
         </BrowserRouter>

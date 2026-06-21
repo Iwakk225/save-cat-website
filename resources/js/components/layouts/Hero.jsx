@@ -6,22 +6,39 @@ import SimpleParallax from "simple-parallax-js";
 
 import HeroImage from '@/assets/hero.webp';
 import HeroImageMobile from '@/assets/hero-mobile.webp';
+import HeroImageTablet from '@/assets/hero-tablet.webp';
+import HeroImageTablet2 from '@/assets/hero-tablet2.webp';
 
 export default function Hero() {
-    const [isMobile, setIsMobile] = useState(false);
+    const [screenSize, setScreenSize] = useState('desktop');
 
     useEffect(() => {
-        const checkMobile = () => {
-            setIsMobile(window.innerWidth < 768);
+        const checkScreenSize = () => {
+            const width = window.innerWidth;
+            if (width < 900) {
+                setScreenSize('mobile');
+            } else if (width < 901) {
+                setScreenSize('tablet');
+            } else if (width < 1300) {
+                setScreenSize('tablet2');
+            } else {
+                setScreenSize('desktop');
+            }
         };
 
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
+        checkScreenSize();
+        window.addEventListener('resize', checkScreenSize);
 
-        return () => window.removeEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkScreenSize);
     }, []);
 
-    const currentImage = isMobile ? HeroImageMobile : HeroImage;
+    const currentImage = screenSize === 'mobile' 
+        ? HeroImageMobile 
+        : screenSize === 'tablet' 
+        ? HeroImageTablet 
+        : screenSize === 'tablet2'
+        ? HeroImageTablet2
+        : HeroImage;
 
     return (
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden">

@@ -7,7 +7,6 @@ import SimpleParallax from "simple-parallax-js";
 import HeroImage from '@/assets/hero.webp';
 import HeroImageMobile from '@/assets/hero-mobile.webp';
 import HeroImageTablet from '@/assets/hero-tablet.webp';
-import HeroImageTablet2 from '@/assets/hero-tablet2.webp';
 
 export default function Hero() {
     const [screenSize, setScreenSize] = useState('desktop');

@@ -32,7 +32,7 @@ export default function Impact() {
     ];
 
     return (
-        <section className="py-20 bg-linear-to-b from-teal-50 via-cyan-50 to-emerald-50">
+        <section className="py-20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header Section */}
                 <div className="text-center mb-12">

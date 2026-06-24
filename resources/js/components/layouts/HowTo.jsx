@@ -32,7 +32,7 @@ export default function Impact() {
     ];
 
     return (
-        <section className="py-20 bg-linear-to-b from-teal-50 via-cyan-50 to-emerald-50">
+        <section className="py-20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header Section */}
                 <div className="text-center mb-16">
@@ -60,7 +60,7 @@ export default function Impact() {
                             <div className="relative bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-2 transition-all duration-500 overflow-hidden">
                                 {/* Decorative gradient background */}
                                 <div className={`absolute inset-0 bg-linear-to-br ${step.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
-                                
+
                                 {/* Content */}
                                 <div className="relative">
                                     {/* Step number badge */}

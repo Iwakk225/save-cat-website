@@ -97,7 +97,7 @@ export default function Navbar() {
         });
 
         setTimeout(() => {
-            navigate('/');
+            window.location.reload();
         }, 1500);
     };
 

@@ -50,7 +50,13 @@ export default function Hero() {
                         className="w-full h-full object-cover"
                     />
                 </SimpleParallax>
+                
+                {/* ===== OVERLAY GRADIENT — untuk transisi smooth ke section Impact ===== */}
+                {/* Gradient atas (gelap) */}
                 <div className="absolute inset-0 bg-linear-to-b from-teal-900/80 via-cyan-900/70 to-emerald-900/80" />
+                
+                {/* Gradient bawah — TRANSISI ke green-700 (Impact section) */}
+                <div className="absolute bottom-0 left-0 right-0 h-125 bg-linear-to-t from-green-700 via-green-800/60  to-transparent" />
             </div>
 
             {/* Content */}

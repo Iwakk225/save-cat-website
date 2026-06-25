@@ -3,6 +3,7 @@ import Hero from './layouts/Hero';
 import Impact from './layouts/Impact';
 import HowTo from './layouts/HowTo';
 import Kategori from './layouts/Kategori';
+import CTA from './layouts/CTA';
 
 export default function LandingPages() {
     return (
@@ -12,6 +13,7 @@ export default function LandingPages() {
             <Impact />
             <HowTo />
             <Kategori />
+            <CTA />
         </>
     );
 }

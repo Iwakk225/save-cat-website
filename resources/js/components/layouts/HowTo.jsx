@@ -1,6 +1,6 @@
 import { Search, PenLine, HandCoins, Waypoints, ArrowRight } from 'lucide-react';
 
-export default function Impact() {
+export default function HowTo() {
     const steps = [
         {
             step: '01',
@@ -32,8 +32,166 @@ export default function Impact() {
     ];
 
     return (
-        <section className="py-20">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="relative py-20 bg-green-700/95 overflow-hidden">
+
+            {/* ===== DECORATIVE BACKGROUND ELEMENTS (posisi lebih random) ===== */}
+
+            {/* Soft glowing orbs */}
+            <div className="absolute top-32 left-1/4 w-72 h-72 bg-emerald-400/15 rounded-full blur-3xl pointer-events-none"></div>
+            <div className="absolute bottom-16 right-1/3 w-80 h-80 bg-teal-500/15 rounded-full blur-3xl pointer-events-none"></div>
+            <div className="absolute top-1/2 right-1/4 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            {/* Floating leaves - random positions */}
+            <svg
+                className="absolute top-12 left-[15%] w-12 h-12 text-emerald-400/20 rotate-23 pointer-events-none"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+            >
+                <path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z" />
+            </svg>
+
+            <svg
+                className="absolute top-[45%] right-[8%] w-16 h-16 text-green-300/15 rotate-[-67deg] pointer-events-none"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+            >
+                <path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z" />
+            </svg>
+
+            <svg
+                className="absolute bottom-24 left-[22%] w-10 h-10 text-teal-300/20 rotate-142 pointer-events-none"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+            >
+                <path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z" />
+            </svg>
+
+            <svg
+                className="absolute top-[28%] right-[18%] w-14 h-14 text-emerald-300/15 rotate-311 pointer-events-none"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+            >
+                <path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z" />
+            </svg>
+
+            <svg
+                className="absolute bottom-[35%] left-[5%] w-11 h-11 text-green-400/15 rotate-[-89deg] pointer-events-none"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+            >
+                <path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z" />
+            </svg>
+
+            {/* Cat silhouette - sitting, random position */}
+            <svg
+                className="absolute top-20 right-[12%] w-20 h-20 text-green-900/10 pointer-events-none"
+                viewBox="0 0 100 100"
+                fill="currentColor"
+            >
+                <path d="M30 85 L30 55 Q30 45 35 40 L32 25 L40 35 Q45 32 50 32 Q55 32 60 35 L68 25 L65 40 Q70 45 70 55 L70 85 L60 85 L60 70 L40 70 L40 85 Z" />
+                <circle cx="42" cy="48" r="2" />
+                <circle cx="58" cy="48" r="2" />
+                <path d="M48 54 Q50 56 52 54" stroke="currentColor" strokeWidth="1.5" fill="none" />
+            </svg>
+
+            {/* Cat silhouette - walking, random position */}
+            <svg
+                className="absolute bottom-20 left-[30%] w-24 h-16 text-green-900/10 pointer-events-none"
+                viewBox="0 0 120 60"
+                fill="currentColor"
+            >
+                <path d="M20 50 L20 35 Q20 25 30 22 L28 12 L36 20 Q42 18 48 18 Q54 18 60 20 L68 12 L66 22 Q76 25 80 30 L95 30 Q105 30 105 35 L105 40 Q105 45 100 45 L95 45 L95 50 L88 50 L88 45 L35 45 L35 50 L28 50 L28 45 L20 45 Z" />
+                <path d="M105 35 Q115 32 118 38 Q115 40 105 40" />
+            </svg>
+
+            {/* Paw prints - scattered random */}
+            <svg
+                className="absolute top-[18%] left-[42%] w-6 h-6 text-white/10 rotate-17 pointer-events-none"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+            >
+                <ellipse cx="12" cy="16" rx="5" ry="4" />
+                <circle cx="7" cy="10" r="2" />
+                <circle cx="17" cy="10" r="2" />
+                <circle cx="10" cy="7" r="1.5" />
+                <circle cx="14" cy="7" r="1.5" />
+            </svg>
+
+            <svg
+                className="absolute bottom-[22%] right-[38%] w-5 h-5 text-white/10 rotate-[-34] pointer-events-none"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+            >
+                <ellipse cx="12" cy="16" rx="5" ry="4" />
+                <circle cx="7" cy="10" r="2" />
+                <circle cx="17" cy="10" r="2" />
+                <circle cx="10" cy="7" r="1.5" />
+                <circle cx="14" cy="7" r="1.5" />
+            </svg>
+
+            <svg
+                className="absolute top-[55%] left-[8%] w-4 h-4 text-white/10 rotate-78 pointer-events-none"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+            >
+                <ellipse cx="12" cy="16" rx="5" ry="4" />
+                <circle cx="7" cy="10" r="2" />
+                <circle cx="17" cy="10" r="2" />
+                <circle cx="10" cy="7" r="1.5" />
+                <circle cx="14" cy="7" r="1.5" />
+            </svg>
+
+            <svg
+                className="absolute top-[38%] right-[5%] w-5 h-5 text-white/8 rotate-[-52deg] pointer-events-none"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+            >
+                <ellipse cx="12" cy="16" rx="5" ry="4" />
+                <circle cx="7" cy="10" r="2" />
+                <circle cx="17" cy="10" r="2" />
+                <circle cx="10" cy="7" r="1.5" />
+                <circle cx="14" cy="7" r="1.5" />
+            </svg>
+
+            <svg
+                className="absolute bottom-[12%] left-[55%] w-4 h-4 text-white/10 rotate-123 pointer-events-none"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+            >
+                <ellipse cx="12" cy="16" rx="5" ry="4" />
+                <circle cx="7" cy="10" r="2" />
+                <circle cx="17" cy="10" r="2" />
+                <circle cx="10" cy="7" r="1.5" />
+                <circle cx="14" cy="7" r="1.5" />
+            </svg>
+
+            {/* Tree/branch silhouette - random positions */}
+            <svg
+                className="absolute left-0 top-[20%] w-24 h-56 text-green-900/10 pointer-events-none"
+                viewBox="0 0 100 200"
+                fill="currentColor"
+            >
+                <path d="M50 200 L50 100 Q30 90 20 70 Q15 55 25 45 Q20 30 35 25 Q40 10 50 5 Q60 10 65 25 Q80 30 75 45 Q85 55 80 70 Q70 90 50 100" />
+            </svg>
+
+            <svg
+                className="absolute right-0 bottom-[15%] w-20 h-48 text-green-900/8 pointer-events-none"
+                viewBox="0 0 100 200"
+                fill="currentColor"
+            >
+                <path d="M50 200 L50 120 Q35 110 28 95 Q22 80 32 72 Q28 58 40 52 Q45 38 50 30 Q55 38 60 52 Q72 58 68 72 Q78 80 72 95 Q65 110 50 120" />
+            </svg>
+
+            {/* Small dots / fireflies - random */}
+            <div className="absolute top-[15%] left-[28%] w-1.5 h-1.5 bg-yellow-200/30 rounded-full pointer-events-none animate-pulse"></div>
+            <div className="absolute top-[62%] right-[22%] w-1 h-1 bg-yellow-100/20 rounded-full pointer-events-none animate-pulse delay-700"></div>
+            <div className="absolute bottom-[28%] left-[45%] w-1.5 h-1.5 bg-emerald-200/25 rounded-full pointer-events-none animate-pulse delay-1000"></div>
+            <div className="absolute top-[42%] right-[35%] w-1 h-1 bg-green-200/20 rounded-full pointer-events-none animate-pulse delay-500"></div>
+            <div className="absolute bottom-[18%] left-[12%] w-1.5 h-1.5 bg-teal-200/20 rounded-full pointer-events-none animate-pulse delay-300"></div>
+            <div className="absolute top-[75%] right-[48%] w-1 h-1 bg-cyan-200/15 rounded-full pointer-events-none animate-pulse delay-1000"></div>
+
+            {/* ===== MAIN CONTENT ===== */}
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
                 {/* Header Section */}
                 <div className="text-center mb-16">
                     <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/80 backdrop-blur-sm border border-teal-200 mb-4">
@@ -41,15 +199,15 @@ export default function Impact() {
                             <Waypoints className="mr-2 w-4 h-4" /> CARA KERJA
                         </span>
                     </div>
-                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
+                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-200 mb-4 tracking-tight">
                         Tiga langkah sederhana untuk menolong
                     </h2>
-                    <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                    <p className="text-lg text-gray-300 max-w-2xl mx-auto">
                         Mulai dari menemukan kucing hingga komunitas turun tangan—prosesnya cepat, transparan, dan terverifikasi.
                     </p>
                 </div>
 
-                {/* Steps Grid - Design lebih modern dengan flow */}
+                {/* Steps Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto relative">
                     {/* Connector line (desktop only) */}
                     <div className="hidden md:block absolute top-24 left-1/4 right-1/4 h-0.5 bg-linear-to-r from-teal-200 via-cyan-200 to-emerald-200"></div>
@@ -57,21 +215,21 @@ export default function Impact() {
                     {steps.map((step, index) => (
                         <div key={index} className="group relative">
                             {/* Card */}
-                            <div className="relative bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-xl hover:-translate-y-2 transition-all duration-500 overflow-hidden">
+                            <div className="relative bg-white rounded-2xl p-6 shadow-sm border border-gray-100 md:hover:shadow-xl md:hover:-translate-y-2 transition-all duration-500 overflow-hidden">
                                 {/* Decorative gradient background */}
-                                <div className={`absolute inset-0 bg-linear-to-br ${step.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
+                                <div className={`absolute inset-0 bg-linear-to-br ${step.gradient} opacity-0 md:group-hover:opacity-5 transition-opacity duration-500`}></div>
 
                                 {/* Content */}
                                 <div className="relative">
                                     {/* Step number badge */}
-                                    <div className="absolute -top-3 -right-3 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center group-hover:bg-gray-900 group-hover:text-white transition-colors duration-500">
-                                        <span className="text-sm font-bold text-gray-600 group-hover:text-white">{step.step}</span>
+                                    <div className="absolute -top-3 -right-3 w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center md:group-hover:bg-green-600 md:group-hover:text-white transition-colors duration-500">
+                                        <span className="text-sm font-bold text-gray-600 md:group-hover:text-white">{step.step}</span>
                                     </div>
 
                                     {/* Icon with glow effect */}
                                     <div className="relative inline-flex mb-5">
-                                        <div className={`absolute inset-0 ${step.bgColor} rounded-xl blur-lg opacity-60 group-hover:opacity-100 transition-opacity duration-500`}></div>
-                                        <div className={`relative w-14 h-14 ${step.bgColor} rounded-xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-500`}>
+                                        <div className={`absolute inset-0 ${step.bgColor} rounded-xl blur-lg opacity-60 md:group-hover:opacity-100 transition-opacity duration-500`}></div>
+                                        <div className={`relative w-14 h-14 ${step.bgColor} rounded-xl flex items-center justify-center md:group-hover:scale-110 md:group-hover:rotate-3 transition-all duration-500`}>
                                             <step.icon className={`w-7 h-7 ${step.iconColor}`} />
                                         </div>
                                     </div>
@@ -87,7 +245,7 @@ export default function Impact() {
                                     </div>
 
                                     {/* Decorative line */}
-                                    <div className={`mt-4 h-1 w-12 bg-linear-to-r ${step.gradient} rounded-full opacity-60 group-hover:w-full transition-all duration-500`}></div>
+                                    <div className={`mt-4 h-1 w-12 bg-linear-to-r ${step.gradient} rounded-full opacity-60 md:group-hover:w-full transition-all duration-500`}></div>
                                 </div>
                             </div>
 

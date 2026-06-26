@@ -35,8 +35,6 @@ export default function Hero() {
         ? HeroImageMobile 
         : screenSize === 'tablet' 
         ? HeroImageTablet 
-        : screenSize === 'tablet2'
-        ? HeroImageTablet2
         : HeroImage;
 
     return (

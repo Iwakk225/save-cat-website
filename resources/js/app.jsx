@@ -9,6 +9,9 @@ import VerifyEmail from './components/VerifyEmailPages';
 import ForgotPassword from './components/ForgetPassPages';
 import VerifyResetCode from './components/ForgetPassProcess/VerifyResetCode';
 import ResetPassword from './components/ForgetPassProcess/ResetPassword';
+import AdminDashboard from './components/AdminPages/AdminDashboard';
+import CreateReport from './components/ReportPages/CreateReport';
+import ReportsPage from './components/ReportPages/ReportsPage';
 
 function App() {
     return (
@@ -21,6 +24,9 @@ function App() {
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/verify-reset-code" element={<VerifyResetCode />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/reports" element={<ReportsPage />} />
+                <Route path="/report/create" element={<CreateReport />} />
             </Routes>
         </BrowserRouter>
     );

@@ -6,37 +6,77 @@ use App\Models\Report;
 use App\Models\ReportImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Cloudinary\Cloudinary as CloudinarySDK;
 
 class ReportController extends Controller
 {
+    /**
+     * Initialize Cloudinary instance dari .env (Khusus untuk Upload/Delete)
+     */
+    private function getCloudinary()
+    {
+        return new CloudinarySDK(env('CLOUDINARY_URL'));
+    }
+
+    /**
+     * Generate URL gambar HD dengan optimasi otomatis (Manual String Builder)
+     */
+    private function getOptimizedUrl($publicId)
+    {
+        if (!$publicId) {
+            return 'https://placehold.co/1280x720/0d9488/ffffff?text=🐱';
+        }
+
+        if (str_starts_with($publicId, 'http://') || str_starts_with($publicId, 'https://')) {
+            return $publicId;
+        }
+
+        $cloudName = env('CLOUDINARY_CLOUD_NAME');
+        // q = quality, f = format, w = width, c = crop
+        return "https://res.cloudinary.com/{$cloudName}/image/upload/q_auto:good,f_auto,w_1280,c_limit/{$publicId}";
+    }
+
+    /**
+     * Generate URL thumbnail kecil untuk card list (Manual String Builder)
+     */
+    private function getThumbnailUrl($publicId)
+    {
+        if (!$publicId) {
+            return 'https://placehold.co/400x300/0d9488/ffffff?text=🐱';
+        }
+
+        if (str_starts_with($publicId, 'http://') || str_starts_with($publicId, 'https://')) {
+            return $publicId;
+        }
+
+        $cloudName = env('CLOUDINARY_CLOUD_NAME');
+        return "https://res.cloudinary.com/{$cloudName}/image/upload/q_auto:eco,f_auto,w_600,h_400,c_fill/{$publicId}";
+    }
+
     public function index(Request $request)
     {
         $query = Report::with(['user', 'images', 'comments']);
 
-        // Search filter
         if ($request->filled('search')) {
             $search = $request->input('search');
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('location', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%")
-                  ->orWhereHas('user', function($qu) use ($search) {
-                      $qu->where('name', 'like', "%{$search}%");
-                  });
+                    ->orWhere('location', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($qu) use ($search) {
+                        $qu->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 
-        // Category filter
         if ($request->filled('category') && $request->input('category') !== 'semua') {
             $query->where('category', $request->input('category'));
         }
 
-        // Status filter
         if ($request->filled('status') && $request->input('status') !== 'semua') {
             $query->where('status', $request->input('status'));
         }
 
-        // Sorting
         $sortBy = $request->input('sortBy', 'terbaru');
         if ($sortBy === 'terbaru') {
             $query->orderBy('created_at', 'desc');
@@ -55,13 +95,9 @@ class ReportController extends Controller
         $perPage = $request->input('per_page', 8);
         $reports = $query->paginate($perPage);
 
-        // Map results to match frontend expectation
-        $items = collect($reports->items())->map(function($report) {
+        $items = collect($reports->items())->map(function ($report) {
             $firstImage = $report->images->first();
-            $imagePath = $firstImage ? $firstImage->image_path : 'https://placecats.com/400/300';
-            $imageUrl = (str_starts_with($imagePath, 'http://') || str_starts_with($imagePath, 'https://')) 
-                ? $imagePath 
-                : asset('storage/' . $imagePath);
+            $publicId = $firstImage ? $firstImage->image_path : null;
 
             return [
                 'id' => $report->id,
@@ -75,12 +111,11 @@ class ReportController extends Controller
                 'contact' => $report->contact,
                 'comments' => $report->comments->count(),
                 'createdAt' => $report->created_at->toIso8601String(),
-                'image' => $imageUrl,
+                'image' => $this->getThumbnailUrl($publicId),
                 'tags' => $report->tags ?? [],
             ];
         });
 
-        // Calculate stats for stats strip
         $stats = [
             'total' => Report::count(),
             'aktif' => Report::where('status', 'aktif')->count(),
@@ -108,7 +143,6 @@ class ReportController extends Controller
             return response()->json(['message' => 'Laporan tidak ditemukan'], 404);
         }
 
-        // Return details
         return response()->json([
             'id' => $report->id,
             'title' => $report->title,
@@ -121,13 +155,11 @@ class ReportController extends Controller
             'contact' => $report->contact,
             'comments_count' => $report->comments->count(),
             'createdAt' => $report->created_at->toIso8601String(),
-            'images' => $report->images->map(function($img) {
-                return (str_starts_with($img->image_path, 'http://') || str_starts_with($img->image_path, 'https://')) 
-                    ? $img->image_path 
-                    : asset('storage/' . $img->image_path);
+            'images' => $report->images->map(function ($img) {
+                return $this->getOptimizedUrl($img->image_path);
             }),
             'tags' => $report->tags ?? [],
-            'comments' => $report->comments->map(function($c) {
+            'comments' => $report->comments->map(function ($c) {
                 return [
                     'id' => $c->id,
                     'user_id' => $c->user_id,
@@ -148,6 +180,8 @@ class ReportController extends Controller
             'location' => 'required|string',
             'description' => 'required|string',
             'contact' => 'nullable|string',
+            'images' => 'nullable|array|max:5',
+            'images.*' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
         ]);
 
         if ($validator->fails()) {
@@ -156,17 +190,10 @@ class ReportController extends Controller
 
         $user = $request->user();
 
-        // Simple tag inference based on category/title
         $tags = [];
-        if ($request->input('urgency') === 'tinggi') {
-            $tags[] = 'Butuh Segera';
-        }
-        if ($request->input('category') === 'terluka') {
-            $tags[] = 'Luka Fisik';
-        }
-        if ($request->input('category') === 'terlantar') {
-            $tags[] = 'Terlantar';
-        }
+        if ($request->input('urgency') === 'tinggi') $tags[] = 'Butuh Segera';
+        if ($request->input('category') === 'terluka') $tags[] = 'Luka Fisik';
+        if ($request->input('category') === 'terlantar') $tags[] = 'Terlantar';
 
         $report = Report::create([
             'user_id' => $user->id,
@@ -180,32 +207,56 @@ class ReportController extends Controller
             'tags' => $tags,
         ]);
 
-        // Process images if any
         if ($request->hasFile('images')) {
+            $cloudinary = $this->getCloudinary();
+            
             foreach ($request->file('images') as $file) {
-                $path = $file->store('reports', 'public');
+                $uploaded = $cloudinary->uploadApi()->upload($file->getRealPath(), [
+                    'folder' => 'savecat/reports',
+                    'transformation' => [
+                        'quality' => 'auto:good',
+                        'fetch_format' => 'auto',
+                        'width' => 1280,
+                        'crop' => 'limit',
+                    ],
+                ]);
+
                 ReportImage::create([
                     'report_id' => $report->id,
-                    'image_path' => $path,
+                    'image_path' => $uploaded['public_id'],
                 ]);
             }
-        } elseif ($request->has('images')) {
-            // Check if there are base64 or array of files or something
-            // If they are sent as individual files or if none, we will seed placeholder
-            ReportImage::create([
-                'report_id' => $report->id,
-                'image_path' => 'https://placecats.com/400/300',
-            ]);
-        } else {
-            ReportImage::create([
-                'report_id' => $report->id,
-                'image_path' => 'https://placecats.com/400/300',
-            ]);
         }
 
         return response()->json([
             'id' => $report->id,
             'message' => 'Laporan berhasil dibuat',
         ], 201);
+    }
+
+    public function destroy($id)
+    {
+        $report = Report::with('images')->find($id);
+
+        if (!$report) {
+            return response()->json(['message' => 'Laporan tidak ditemukan'], 404);
+        }
+
+        $cloudinary = $this->getCloudinary();
+        foreach ($report->images as $img) {
+            if ($img->image_path && !str_starts_with($img->image_path, 'http')) {
+                try {
+                    $cloudinary->uploadApi()->destroy($img->image_path, ['resource_type' => 'image']);
+                } catch (\Exception $e) {
+                    \Log::warning("Gagal hapus gambar Cloudinary: " . $e->getMessage());
+                }
+            }
+        }
+
+        $report->images()->delete();
+        $report->comments()->delete();
+        $report->delete();
+
+        return response()->json(['message' => 'Laporan berhasil dihapus']);
     }
 }

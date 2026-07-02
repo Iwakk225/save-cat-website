@@ -4,6 +4,7 @@ import Impact from './layouts/Impact';
 import HowTo from './layouts/HowTo';
 import Kategori from './layouts/Kategori';
 import CTA from './layouts/CTA';
+import Footer from './layouts/Footer';
 
 export default function LandingPages() {
     return (
@@ -14,6 +15,7 @@ export default function LandingPages() {
             <HowTo />
             <Kategori />
             <CTA />
+            <Footer />
         </>
     );
 }

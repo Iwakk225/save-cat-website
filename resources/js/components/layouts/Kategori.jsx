@@ -1,41 +1,66 @@
-import { Layers, Home, BriefcaseMedical, Search, Heart, AlarmClock, ArrowRight } from 'lucide-react';
+import { Cat, HeartCrack, Thermometer, Lock, Siren, ClipboardList, Layers, ArrowRight } from 'lucide-react';
 
 export default function Kategori() {
     const categories = [
         {
-            icon: Home,
+            id: 'terlantar',
+            icon: Cat,
             title: 'Kucing Terlantar',
-            subtitle: 'Lihat semua laporan',
-            bgColor: 'bg-teal-50',
-            iconColor: 'text-teal-600',
+            subtitle: 'Butuh tempat tinggal & makanan',
+            bgColor: 'bg-orange-50',
+            iconColor: 'text-orange-600',
+            borderColor: 'hover:border-orange-200',
+            shadowColor: 'hover:shadow-orange-100',
         },
         {
-            icon: BriefcaseMedical,
+            id: 'terluka',
+            icon: HeartCrack,
+            title: 'Kucing Terluka',
+            subtitle: 'Butuh pertolongan medis segera',
+            bgColor: 'bg-red-50',
+            iconColor: 'text-red-600',
+            borderColor: 'hover:border-red-200',
+            shadowColor: 'hover:shadow-red-100',
+        },
+        {
+            id: 'sakit',
+            icon: Thermometer,
             title: 'Kucing Sakit',
-            subtitle: 'Lihat semua laporan',
-            bgColor: 'bg-cyan-50',
-            iconColor: 'text-cyan-600',
+            subtitle: 'Perlu perawatan & obat-obatan',
+            bgColor: 'bg-yellow-50',
+            iconColor: 'text-yellow-600',
+            borderColor: 'hover:border-yellow-200',
+            shadowColor: 'hover:shadow-yellow-100',
         },
         {
-            icon: Search,
-            title: 'Kucing Hilang',
-            subtitle: 'Lihat semua laporan',
-            bgColor: 'bg-teal-50',
-            iconColor: 'text-teal-600',
+            id: 'terjebak',
+            icon: Lock,
+            title: 'Kucing Terjebak',
+            subtitle: 'Terperangkap di tempat sulit',
+            bgColor: 'bg-blue-50',
+            iconColor: 'text-blue-600',
+            borderColor: 'hover:border-blue-200',
+            shadowColor: 'hover:shadow-blue-100',
         },
         {
-            icon: Heart,
-            title: 'Adopsi',
-            subtitle: 'Lihat semua laporan',
-            bgColor: 'bg-cyan-50',
-            iconColor: 'text-cyan-600',
+            id: 'darurat',
+            icon: Siren,
+            title: 'Kondisi Darurat',
+            subtitle: 'Nyawa terancam, butuh segera!',
+            bgColor: 'bg-rose-50',
+            iconColor: 'text-rose-600',
+            borderColor: 'hover:border-rose-200',
+            shadowColor: 'hover:shadow-rose-100',
         },
         {
-            icon: AlarmClock,
-            title: 'Darurat',
-            subtitle: 'Lihat semua laporan',
-            bgColor: 'bg-emerald-50',
-            iconColor: 'text-emerald-600',
+            id: 'lainnya',
+            icon: ClipboardList,
+            title: 'Lainnya',
+            subtitle: 'Kasus lain yang butuh bantuan',
+            bgColor: 'bg-purple-50',
+            iconColor: 'text-purple-600',
+            borderColor: 'hover:border-purple-200',
+            shadowColor: 'hover:shadow-purple-100',
         },
     ];
 
@@ -59,21 +84,21 @@ export default function Kategori() {
                     </div>
 
                     <a
-                        href="#"
+                        href="/reports"
                         className="inline-flex items-center text-teal-700 font-semibold hover:text-teal-600 transition-colors group whitespace-nowrap"
                     >
-                        Lihat semua kategori
+                        Lihat semua laporan
                         <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </a>
                 </div>
 
                 {/* Categories Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {categories.map((category, index) => (
                         <a
                             key={index}
-                            href="#"
-                            className="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-teal-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+                            href={`/reports?category=${category.id}`}
+                            className={`group bg-white rounded-2xl p-6 border border-gray-100 ${category.borderColor} ${category.shadowColor} hover:shadow-lg hover:-translate-y-1 transition-all duration-300`}
                         >
                             {/* Icon */}
                             <div className={`w-12 h-12 ${category.bgColor} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
@@ -86,7 +111,7 @@ export default function Kategori() {
                             </div>
 
                             {/* Subtitle */}
-                            <div className="text-sm text-gray-500 group-hover:text-teal-600 transition-colors">
+                            <div className="text-sm text-gray-500 group-hover:text-gray-700 transition-colors">
                                 {category.subtitle}
                             </div>
                         </a>

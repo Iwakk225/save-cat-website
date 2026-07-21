@@ -12,6 +12,7 @@ import ResetPassword from './components/ForgetPassProcess/ResetPassword';
 import AdminDashboard from './components/AdminPages/AdminDashboard';
 import CreateReport from './components/ReportPages/CreateReport';
 import ReportsPage from './components/ReportPages/ReportsPage';
+import AboutPages from './components/AboutPages';
 
 function App() {
     return (
@@ -27,6 +28,7 @@ function App() {
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/reports" element={<ReportsPage />} />
                 <Route path="/report/create" element={<CreateReport />} />
+                <Route path="/about" element={<AboutPages />} />
             </Routes>
         </BrowserRouter>
     );

@@ -110,10 +110,18 @@ export default function Navbar() {
             .slice(0, 2);
     };
 
+    // Fungsi khusus untuk menangani klik pada link navigasi
+    const handleNavClick = (href) => {
+        if (href === '/') {
+            // Paksa scroll ke paling atas dengan animasi smooth
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    };
+
     const navLinks = [
         { name: 'Beranda', href: '/' },
         { name: 'Jelajahi Laporan', href: '/reports' },
-        { name: 'Cara Kerja', href: '/how-it-works' },
+        { name: 'Cara Kerja', href: '/#howto' }, 
         { name: 'Tentang Kami', href: '/about' },
     ];
 
@@ -146,12 +154,13 @@ export default function Navbar() {
                         </div>
                     </Link>
 
-                    {/* Desktop Navigation - hanya muncul di lg ke atas */}
+                    {/* Desktop Navigation */}
                     <div className="hidden lg:flex items-center space-x-8">
                         {navLinks.map((link) => (
                             <Link
                                 key={link.name}
                                 to={link.href}
+                                onClick={() => handleNavClick(link.href)}
                                 className={`transition-colors text-sm font-medium ${
                                     scrolled
                                         ? 'text-gray-700 hover:text-gray-900'
@@ -163,7 +172,7 @@ export default function Navbar() {
                         ))}
                     </div>
 
-                    {/* Desktop Buttons / Profile - hanya muncul di lg ke atas */}
+                    {/* Desktop Buttons / Profile */}
                     <div className="hidden lg:flex items-center space-x-4">
                         {!isLoggedIn ? (
                             <>
@@ -179,7 +188,7 @@ export default function Navbar() {
                                         Masuk
                                     </Button>
                                 </Link>
-                                <Link to="/report/create">
+                                <Link to="/login">
                                     <Button className="bg-green-600 hover:bg-green-700 text-gray-100 cursor-pointer">
                                         + Buat Laporan
                                     </Button>
@@ -254,7 +263,7 @@ export default function Navbar() {
                         )}
                     </div>
 
-                    {/* Mobile Menu Button - muncul di bawah lg */}
+                    {/* Mobile Menu Button */}
                     <button
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                         className={`lg:hidden p-2 cursor-pointer transition-colors ${scrolled ? 'text-gray-900' : 'text-white'}`}
@@ -267,7 +276,7 @@ export default function Navbar() {
                     </button>
                 </div>
 
-                {/* Mobile Menu - muncul di bawah lg */}
+                {/* Mobile Menu */}
                 {isMobileMenuOpen && (
                     <div className="lg:hidden bg-black/95 backdrop-blur-md rounded-lg mt-2 p-4 space-y-4">
                         {navLinks.map((link) => (
@@ -275,7 +284,10 @@ export default function Navbar() {
                                 key={link.name}
                                 to={link.href}
                                 className="block text-gray-200 hover:text-white transition-colors py-2"
-                                onClick={() => setIsMobileMenuOpen(false)}
+                                onClick={() => {
+                                    handleNavClick(link.href);
+                                    setIsMobileMenuOpen(false); // Tutup menu mobile setelah klik
+                                }}
                             >
                                 {link.name}
                             </Link>

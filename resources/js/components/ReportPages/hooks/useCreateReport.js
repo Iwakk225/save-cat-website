@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { REPORT_CATEGORIES, URGENCY_LEVELS, MAX_IMAGES, MAX_SIZE_MB } from '../constants/reportForm';
@@ -11,14 +11,32 @@ export default function useCreateReport() {
     const [focusedField, setFocusedField] = useState(null);
     const [dragOver, setDragOver] = useState(false);
 
+    // Ambil data user dari localStorage untuk auto-fill nomor telepon
+    const getUserData = () => {
+        try {
+            return JSON.parse(localStorage.getItem('user') || '{}');
+        } catch {
+            return {};
+        }
+    };
+
     const [form, setForm] = useState({
-        title: '', category: '', urgency: '', location: '',
-        description: '', contact: '', images: [],
+        title: '', 
+        category: '', 
+        urgency: '', 
+        location: '',
+        description: '', 
+        contact: getUserData().telp || '', // <-- AUTO-FILL dari DB/LocalStorage
+        images: [],
     });
+    
     const [errors, setErrors] = useState({});
 
     // ─── Handlers ────────────────────────────────────────────────────────────
     const handleChange = (field, value) => {
+        // Mencegah perubahan manual pada field contact (opsional, double protection)
+        if (field === 'contact') return; 
+        
         setForm(prev => ({ ...prev, [field]: value }));
         if (errors[field]) setErrors(prev => ({ ...prev, [field]: '' }));
     };
@@ -50,7 +68,7 @@ export default function useCreateReport() {
     const removeImage = (idx) => {
         setForm(prev => {
             const imgs = [...prev.images];
-            URL.revokeObjectURL(imgs[idx].preview);
+            URL.revokeObjectURL(imgs[idx].preview); // Bagus! Mencegah memory leak
             imgs.splice(idx, 1);
             return { ...prev, images: imgs };
         });
@@ -71,6 +89,12 @@ export default function useCreateReport() {
         if (!form.location.trim()) e.location = 'Lokasi wajib diisi.';
         if (!form.description.trim()) e.description = 'Deskripsi wajib diisi.';
         if (form.description.trim().length < 20) e.description = 'Deskripsi minimal 20 karakter.';
+        
+        // Validasi contact (sebagai pengaman)
+        if (!form.contact || form.contact.trim() === '') {
+            e.contact = 'Nomor kontak tidak ditemukan. Silakan logout dan login kembali.';
+        }
+        
         setErrors(e);
         return Object.keys(e).length === 0;
     };
@@ -91,12 +115,19 @@ export default function useCreateReport() {
             formData.append('urgency', form.urgency);
             formData.append('location', form.location);
             formData.append('description', form.description);
-            formData.append('contact', form.contact);
+            
+            // Fallback: Pastikan contact terisi dari localStorage jika form.contact kosong
+            const finalContact = form.contact || getUserData().telp || '';
+            formData.append('contact', finalContact);
+            
             form.images.forEach((img, i) => formData.append(`images[${i}]`, img.file));
 
             const res = await fetch('/api/reports', {
                 method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/json' },
+                headers: { 
+                    'Authorization': `Bearer ${token}`, 
+                    'Accept': 'application/json' 
+                },
                 body: formData,
             });
 
@@ -115,8 +146,8 @@ export default function useCreateReport() {
         } catch (err) {
             if (!navigator.onLine || err.message === 'Failed to fetch') {
                 await Swal.fire({
-                    icon: 'success', title: 'Laporan Terkirim! 🐱',
-                    html: '<p class="text-sm text-gray-500">(Mode demo — backend belum terhubung)</p>',
+                    icon: 'warning', title: 'Mode Demo',
+                    html: '<p class="text-sm text-gray-500">Koneksi backend belum tersedia. Data tidak benar-benar terkirim.</p>',
                     confirmButtonColor: '#10b981', confirmButtonText: 'Oke',
                 });
                 navigate('/');

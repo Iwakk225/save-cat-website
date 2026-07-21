@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Menu, X, User, LogOut, Shield } from 'lucide-react';
 import Swal from 'sweetalert2';
@@ -8,11 +8,21 @@ import Logo from '@/assets/savecatlogo.png';
 
 export default function Navbar() {
     const navigate = useNavigate();
-    const location = useLocation();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userData, setUserData] = useState(null);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+
+    // Detect scroll position
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 0);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     // Cek status login dari localStorage
     useEffect(() => {
@@ -100,49 +110,10 @@ export default function Navbar() {
             .slice(0, 2);
     };
 
-    useEffect(() => {
-        setIsMobileMenuOpen(false);
-        setShowProfileMenu(false);
-    }, [location.pathname]);
-
+    // Fungsi khusus untuk menangani klik pada link navigasi
     const handleNavClick = (href) => {
-        if (!href) return;
-
         if (href === '/') {
-            if (location.pathname === '/') {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                navigate('/');
-                setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 120);
-            }
-            return;
-        }
-
-        if (href.includes('#')) {
-            const [targetPath, hash] = href.split('#');
-            const target = targetPath || '/';
-            const scrollToSection = () => {
-                const element = document.getElementById(hash);
-                if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                } else {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-            };
-
-            if (location.pathname === target) {
-                scrollToSection();
-            } else {
-                navigate(target);
-                setTimeout(scrollToSection, 180);
-            }
-            return;
-        }
-
-        if (location.pathname !== href) {
-            navigate(href);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
+            // Paksa scroll ke paling atas dengan animasi smooth
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
@@ -155,7 +126,13 @@ export default function Navbar() {
     ];
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
+        <nav
+            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+                scrolled
+                    ? 'bg-white shadow-md'
+                    : 'bg-linear-to-b from-gray-950 to-transparent'
+            }`}
+        >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-20">
                     {/* Logo */}
@@ -168,9 +145,13 @@ export default function Navbar() {
                             />
                         </div>
                         <div className="flex flex-col">
-                        <span className="font-bold text-lg leading-tight text-gray-900">Save Cat</span>
-                        <span className="text-xs text-gray-500">COMMUNITY</span>
-                    </div>
+                            <span className={`font-bold text-lg leading-tight transition-colors duration-300 ${scrolled ? 'text-gray-900' : 'text-white'}`}>
+                                Save Cat
+                            </span>
+                            <span className={`text-xs transition-colors duration-300 ${scrolled ? 'text-gray-500' : 'text-gray-300'}`}>
+                                COMMUNITY
+                            </span>
+                        </div>
                     </Link>
 
                     {/* Desktop Navigation */}
@@ -180,7 +161,11 @@ export default function Navbar() {
                                 key={link.name}
                                 to={link.href}
                                 onClick={() => handleNavClick(link.href)}
-                                className="transition-colors text-sm font-medium text-gray-700 hover:text-gray-900"
+                                className={`transition-colors text-sm font-medium ${
+                                    scrolled
+                                        ? 'text-gray-700 hover:text-gray-900'
+                                        : 'text-gray-200 hover:text-white'
+                                }`}
                             >
                                 {link.name}
                             </Link>
@@ -193,11 +178,15 @@ export default function Navbar() {
                             <>
                                 <Link to="/login">
                                     <Button
-                                    variant="ghost"
-                                    className="cursor-pointer transition-colors text-gray-700 hover:bg-gray-100"
-                                >
-                                    Masuk
-                                </Button>
+                                        variant="ghost"
+                                        className={`cursor-pointer transition-colors ${
+                                            scrolled
+                                                ? 'text-gray-700 hover:bg-gray-100'
+                                                : 'text-white hover:bg-white/10'
+                                        }`}
+                                    >
+                                        Masuk
+                                    </Button>
                                 </Link>
                                 <Link to="/login">
                                     <Button className="bg-green-600 hover:bg-green-700 text-gray-100 cursor-pointer">
@@ -277,7 +266,7 @@ export default function Navbar() {
                     {/* Mobile Menu Button */}
                     <button
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        className="lg:hidden p-2 cursor-pointer text-gray-700 transition-colors"
+                        className={`lg:hidden p-2 cursor-pointer transition-colors ${scrolled ? 'text-gray-900' : 'text-white'}`}
                     >
                         {isMobileMenuOpen ? (
                             <X className="w-6 h-6" />

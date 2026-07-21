@@ -9,8 +9,12 @@ import { REPORT_CATEGORIES, URGENCY_LEVELS, MAX_IMAGES, MAX_SIZE_MB } from '../c
 export default function CreateReportForm(props) {
     const {
         form, errors, focusedField, setFocusedField, dragOver, setDragOver,
-        fileInputRef, handleChange, addImages, removeImage, handleDrop, handleNext
+        fileInputRef, handleChange, addImages, removeImage, handleDrop, handleNext,
+        userData // <-- Tambahkan userData di sini (dikirim dari parent component)
     } = props;
+
+    // Fallback: Ambil dari userData prop, atau langsung dari localStorage jika prop kosong
+    const autoFilledContact = form.contact || userData?.telp || JSON.parse(localStorage.getItem('user') || '{}')?.telp || '';
 
     return (
         <div className="bg-teal-950/80 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl p-6 sm:p-8 space-y-6">
@@ -125,21 +129,35 @@ export default function CreateReportForm(props) {
                 {errors.description && <p className="text-red-400 text-xs flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.description}</p>}
             </div>
 
-            {/* Kontak */}
+            {/* ===== KONTAK (DIPERBAIKI: AUTO-FILL & DISABLED) ===== */}
             <div className="space-y-2 animate-input-delay-6">
                 <Label className="text-white text-sm font-semibold flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-emerald-400" /> Nomor Kontak <span className="text-gray-400 font-normal">(opsional)</span>
+                    <Phone className="w-4 h-4 text-emerald-400" /> Nomor Kontak 
+                    <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30 font-normal">
+                        Otomatis
+                    </span>
                 </Label>
-                <div className={`relative transition-all duration-300 ${focusedField === 'contact' ? 'scale-[1.01]' : ''}`}>
+                <div className="relative">
                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                     <Input
-                        id="report-contact" type="tel" placeholder="08xxxxxxxxxx (agar mudah dihubungi relawan)"
-                        value={form.contact} onChange={e => handleChange('contact', e.target.value)}
-                        onFocus={() => setFocusedField('contact')} onBlur={() => setFocusedField(null)}
-                        className="pl-10 bg-white/10 border-white/25 text-white placeholder:text-gray-400 focus:border-emerald-400 focus:ring-emerald-400/20 font-medium"
+                        id="report-contact" 
+                        type="tel" 
+                        value={autoFilledContact}
+                        disabled
+                        readOnly
+                        placeholder="Memuat nomor..."
+                        className="pl-10 bg-white/5 border-white/20 text-gray-300 placeholder:text-gray-500 cursor-not-allowed opacity-70 focus:outline-none font-medium"
                     />
+                    {/* Ikon Centang Hijau di kanan input */}
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-400">
+                        <CheckCircle2 className="w-4 h-4" />
+                    </div>
                 </div>
+                <p className="text-xs text-gray-400 flex items-center gap-1">
+                    <Info className="w-3 h-3" /> Nomor ini diambil otomatis dari profil akun Anda dan tidak dapat diubah.
+                </p>
             </div>
+            {/* ===== AKHIR BAGIAN KONTAK ===== */}
 
             {/* Upload Foto */}
             <div className="space-y-3">

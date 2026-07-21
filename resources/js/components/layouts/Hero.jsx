@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { PenLine, Compass, HeartHandshake, ShieldCheck, Sparkles } from 'lucide-react';
+import { PenLine, Compass, HeartHandshake } from 'lucide-react';
 import SimpleParallax from "simple-parallax-js";
 
 import HeroImage from '@/assets/hero.webp';
 import HeroImageMobile from '@/assets/hero-mobile.webp';
 import HeroImageTablet from '@/assets/hero-tablet.webp';
+import HeroImageTablet2 from '@/assets/hero-tablet2.webp';
 
 export default function Hero() {
     const [screenSize, setScreenSize] = useState('desktop');
@@ -17,9 +18,9 @@ export default function Hero() {
             if (width < 900) {
                 setScreenSize('mobile');
             } else if (width < 901) {
-                setScreenSize('tablet');
-            } else if (width < 1300) {
                 setScreenSize('tablet2');
+            } else if (width < 1300) {
+                setScreenSize('tablet');
             } else {
                 setScreenSize('desktop');
             }
@@ -31,11 +32,13 @@ export default function Hero() {
         return () => window.removeEventListener('resize', checkScreenSize);
     }, []);
 
-    const currentImage = screenSize === 'mobile' 
-        ? HeroImageMobile 
-        : screenSize === 'tablet' 
-        ? HeroImageTablet 
-        : HeroImage;
+    const currentImage = screenSize === 'mobile'
+        ? HeroImageMobile
+        : screenSize === 'tablet'
+            ? HeroImageTablet
+            : screenSize === 'tablet2'
+                ? HeroImageTablet2
+                : HeroImage;
 
     return (
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -48,8 +51,25 @@ export default function Hero() {
                     />
                 </SimpleParallax>
 
+                {/* Background gradient */}
                 <div className="absolute inset-0 bg-linear-to-b from-teal-950/85 via-cyan-900/75 to-emerald-900/85" />
-                <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-green-700 via-green-800/60 to-transparent" />
+
+                {/* Wave separator - gunakan warna yang SAMA dengan Impact */}
+                <div className="absolute -bottom-1 -left-5 right-0">
+                    <svg
+                        viewBox="0 0 1440 120"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-full h-auto text-green-700"
+                    >
+                        <path
+                            d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z"
+                            fill="currentColor"
+                        />
+                    </svg>
+                </div>
+
+                {/* Decorative elements */}
                 <div className="absolute left-[-10%] top-[-8%] h-56 w-56 rounded-full bg-emerald-400/20 blur-3xl" />
                 <div className="absolute bottom-12 right-[-5%] h-72 w-72 rounded-full bg-cyan-400/20 blur-3xl" />
             </div>
@@ -78,7 +98,7 @@ export default function Hero() {
                         <Link to="/report/create">
                             <Button
                                 size="lg"
-                                className="w-full rounded-full bg-linear-to-r from-teal-600 to-cyan-600 px-7 py-6 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:from-teal-700 hover:to-cyan-700 hover:shadow-xl sm:w-auto"
+                                className="cursor-pointer w-full rounded-full bg-linear-to-r from-teal-600 to-cyan-600 px-7 py-6 text-base font-semibold text-white shadow-lg transition-all duration-300 hover:from-teal-700 hover:to-cyan-700 hover:shadow-xl sm:w-auto"
                             >
                                 <PenLine className="mr-2 h-5 w-5" />
                                 Buat Laporan
@@ -88,59 +108,12 @@ export default function Hero() {
                             <Button
                                 size="lg"
                                 variant="outline"
-                                className="w-full rounded-full border-2 border-white/30 bg-transparent px-7 py-6 text-base font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:border-white/50 sm:w-auto"
+                                className="cursor-pointer w-full rounded-full border-2 border-white/30 bg-transparent px-7 py-6 text-base font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/10 hover:border-white/50 sm:w-auto"
                             >
                                 <Compass className="mr-2 h-5 w-5" />
                                 Jelajahi Laporan
                             </Button>
                         </Link>
-                    </div>
-
-                    <div className="mt-8 flex flex-wrap justify-center gap-3 lg:justify-start">
-                        {['Laporan cepat', 'Relawan lokal', 'Komunitas peduli'].map((item) => (
-                            <span key={item} className="rounded-full border border-white/20 bg-white/10 px-3 py-2 text-sm text-teal-50 backdrop-blur-sm">
-                                {item}
-                            </span>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="w-full max-w-md rounded-[28px] border border-white/15 bg-white/10 p-4 shadow-2xl shadow-black/20 backdrop-blur-xl">
-                    <div className="rounded-[24px] bg-slate-950/60 p-6">
-                        <p className="text-sm font-semibold uppercase tracking-[0.28em] text-teal-200">Hari ini</p>
-                        <h2 className="mt-3 text-2xl font-semibold text-white">Ada banyak kucing yang butuh bantuan</h2>
-                        <div className="mt-6 space-y-3">
-                            {[
-                                {
-                                    icon: ShieldCheck,
-                                    title: 'Laporan aman',
-                                    text: 'Semua pelaporan diarahkan dengan pertimbangan keselamatan.',
-                                },
-                                {
-                                    icon: Sparkles,
-                                    title: 'Respons cepat',
-                                    text: 'Komunitas dapat melihat laporan yang paling butuh perhatian.',
-                                },
-                                {
-                                    icon: HeartHandshake,
-                                    title: 'Dukungan nyata',
-                                    text: 'Bantuan bisa datang dari relawan, tetangga, dan donatur.',
-                                },
-                            ].map((item) => {
-                                const Icon = item.icon;
-                                return (
-                                    <div key={item.title} className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/10 p-3">
-                                        <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-300">
-                                            <Icon className="h-4 w-4" />
-                                        </div>
-                                        <div>
-                                            <p className="font-semibold text-white">{item.title}</p>
-                                            <p className="mt-1 text-sm text-slate-300">{item.text}</p>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
                     </div>
                 </div>
             </div>
